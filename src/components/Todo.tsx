@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { Button, Checkbox, Divider, Input, List } from "antd";
+import React, { useEffect, useState } from "react";
 
 interface Task {
   id: number;
@@ -9,18 +10,23 @@ interface Task {
 const Todo: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [taskTitle, setTaskTitle] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
+
+  useEffect(() => {
+    console.log(tasks.filter((task) => !task.completed));
+  }, [tasks]);
 
   const addTask = () => {
-    if (taskTitle.trim() === "") return;
-
     const newTask: Task = {
       id: Date.now(),
-      title: taskTitle,
+      title: inputValue,
       completed: false,
     };
 
     setTasks([...tasks, newTask]);
-    setTaskTitle("");
+    console.log(tasks);
+
+    setTaskTitle(inputValue);
   };
 
   const toggleTaskCompletion = (id: number) => {
@@ -36,46 +42,58 @@ const Todo: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>ToDo List</h1>
-      <input
-        type="text"
-        value={taskTitle}
-        onChange={(e) => setTaskTitle(e.target.value)}
-        placeholder="Введите новую задачу"
+    <div style={{ padding: "20px" }}>
+      <h2>Todo List</h2>
+      <Input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Добавить новую задачу"
+        style={{ width: "300px", marginRight: "10px" }}
       />
-      <button onClick={addTask}>Добавить задачу</button>
-
-      <h2>Невыполненные задачи</h2>
-      <ul>
-        {tasks
-          .filter((task) => !task.completed)
-          .map((task) => (
-            <li key={task.id}>
-              <span onClick={() => toggleTaskCompletion(task.id)}>
-                {task.title}
-              </span>
-              <button onClick={() => removeTask(task.id)}>Удалить</button>
-            </li>
-          ))}
-      </ul>
-
-      <h2>Выполненные задачи</h2>
-      <ul>
-        {tasks
-          .filter((task) => task.completed)
-          .map((task) => (
-            <li key={task.id}>
-              <span
-                onClick={() => toggleTaskCompletion(task.id)}
-                style={{ textDecoration: "line-through" }}
-              >
-                {task.title}
-              </span>
-              <button onClick={() => removeTask(task.id)}>Удалить</button>
-            </li>
-          ))}
-      </ul>
+      <Button type="primary" onClick={addTask}>
+        Добавить
+      </Button>
+      <Divider />
+      <h4>Невыполненные задачи</h4>
+      <List
+        bordered
+        dataSource={tasks.filter((task) => !task.completed)}
+        renderItem={(task) => (
+          <List.Item
+            onClick={() => toggleTaskCompletion(task.id)}
+            actions={[
+              <Button type="link" onClick={() => toggleTaskCompletion(task.id)}>
+                Выполнить
+              </Button>,
+              <Button type="link" danger onClick={() => removeTask(task.id)}>
+                Удалить
+              </Button>,
+            ]}
+          >
+            <Checkbox>{task.title}</Checkbox>
+          </List.Item>
+        )}
+      />
+      <h4>Выполненные задачи</h4>
+      <List
+        bordered
+        dataSource={tasks.filter((task) => task.completed)}
+        renderItem={(task) => (
+          <List.Item
+            onClick={() => toggleTaskCompletion(task.id)}
+            actions={[
+              <Button type="link" onClick={() => toggleTaskCompletion(task.id)}>
+                Вернуть
+              </Button>,
+              <Button type="link" danger onClick={() => removeTask(task.id)}>
+                Удалить
+              </Button>,
+            ]}
+          >
+            <Checkbox checked>{task.title}</Checkbox>
+          </List.Item>
+        )}
+      />
     </div>
   );
 };
