@@ -1,5 +1,6 @@
-import { Button, Checkbox, Divider, Input, List } from "antd";
+import { Button, Checkbox, Divider, Input, List, Typography } from "antd";
 import React, { useEffect, useState } from "react";
+import { todoService } from "../services/todoService";
 
 interface Task {
   id: number;
@@ -7,60 +8,67 @@ interface Task {
   completed: boolean;
 }
 
+const { Item } = List;
+
 const Todo: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [taskTitle, setTaskTitle] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
-    console.log(tasks.filter((task) => !task.completed));
-  }, [tasks]);
+    const storedTasks = todoService.getAllTodos();
+    setTasks(storedTasks);
+  }, []);
 
   const addTask = () => {
-    const newTask: Task = {
-      id: Date.now(),
-      title: inputValue,
-      completed: false,
-    };
+    if (inputValue.trim()) {
+      const newTask: Task = {
+        id: Date.now(),
+        title: inputValue,
+        completed: false,
+      };
 
-    setTasks([...tasks, newTask]);
-    console.log(tasks);
-
-    setTaskTitle(inputValue);
+      todoService.addTodo(newTask);
+      setTasks([...tasks, newTask]);
+      setInputValue("");
+    }
   };
 
   const toggleTaskCompletion = (id: number) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task
     );
+    const updatedTask = updatedTasks.find((task) => task.id === id);
+    if (updatedTask) {
+      todoService.updateTodo(updatedTask);
+    }
+    setTasks(updatedTasks);
   };
 
   const removeTask = (id: number) => {
+    todoService.deleteTodo(id);
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Todo List</h2>
+      <Typography.Title level={3}>Todo List</Typography.Title>
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder="Добавить новую задачу"
         style={{ width: "300px", marginRight: "10px" }}
+        onPressEnter={addTask} // Вместо этого еще можно использовать onKeyPress и проверкой event.key === "Enter" вызывать addTask
       />
       <Button type="primary" onClick={addTask}>
         Добавить
       </Button>
       <Divider />
-      <h4>Невыполненные задачи</h4>
+      <Typography.Title level={4}>Невыполненные задачи</Typography.Title>
       <List
         bordered
         dataSource={tasks.filter((task) => !task.completed)}
         renderItem={(task) => (
-          <List.Item
-            onClick={() => toggleTaskCompletion(task.id)}
+          <Item
             actions={[
               <Button type="link" onClick={() => toggleTaskCompletion(task.id)}>
                 Выполнить
@@ -71,16 +79,15 @@ const Todo: React.FC = () => {
             ]}
           >
             <Checkbox>{task.title}</Checkbox>
-          </List.Item>
+          </Item>
         )}
       />
-      <h4>Выполненные задачи</h4>
+      <Typography.Title level={4}>Выполненные задачи</Typography.Title>
       <List
         bordered
         dataSource={tasks.filter((task) => task.completed)}
         renderItem={(task) => (
-          <List.Item
-            onClick={() => toggleTaskCompletion(task.id)}
+          <Item
             actions={[
               <Button type="link" onClick={() => toggleTaskCompletion(task.id)}>
                 Вернуть
@@ -91,7 +98,7 @@ const Todo: React.FC = () => {
             ]}
           >
             <Checkbox checked>{task.title}</Checkbox>
-          </List.Item>
+          </Item>
         )}
       />
     </div>
