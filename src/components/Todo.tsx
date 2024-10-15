@@ -50,11 +50,11 @@ const Todo: React.FC = () => {
   };
 
   const incompletedTasks = useMemo(
-    () => tasks.filter((task) => !task.completed),
+    () => tasks.filter((task) => !task.completed) || [],
     [tasks]
   );
   const completed = useMemo(
-    () => tasks.filter((task) => task.completed),
+    () => tasks.filter((task) => task.completed) || [],
     [tasks]
   );
 
