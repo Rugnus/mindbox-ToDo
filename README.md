@@ -1,46 +1,67 @@
-# Getting Started with Create React App
+# Todo App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Простое приложение для управления задачами на **React** с использованием **TypeScript** и **Ant Design**. Задачи сохраняются в **localStorage** для сохранения данных между перезагрузками страницы.
 
-## Available Scripts
+## Функционал
 
-In the project directory, you can run:
+- Добавление новых задач
+- Отметка задач как выполненных
+- Списки выполненных и невыполненных задач
+- Удаление задач
+- Сохранение задач в **localStorage**
 
-### `npm start`
+## Технологии
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **React** с хуками
+- **TypeScript**
+- **Ant Design** для UI компонентов
+- **localStorage** для хранения данных
+- **Jest** и **React Testing Library** для тестирования
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Установка
 
-### `npm test`
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/your-username/todo-app.git
+   cd todo-app
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Установите зависимости:
+   ```bash
+   npm install
+   ```
 
-### `npm run build`
+## Запуск
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Для запуска приложения:
+```bash
+npm start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Тестирование
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Для запуска тестов:
+```bash
+npm test
+```
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Структура проекта
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+├── public/                # Публичные файлы
+├── src/
+│   ├── components/        # React компоненты
+│   │   ├── Todo.test.tsx  # Тесты для компонента Todo
+│   │   └── Todo.tsx       # Компонент для управления задачами
+│   ├── services/          # Логика работы с localStorage
+│   │   ├── todoService.test.ts  # Тесты для сервиса работы с задачами
+│   │   └── todoService.ts       # Сервис для работы с задачами
+│   ├── App.tsx            # Основной компонент приложения
+│   ├── App.test.tsx       # Тесты для основного компонента приложения
+│   ├── index.tsx          # Точка входа в приложение
+│   └── setupTests.ts      # Настройки для тестирования
+├── package.json           # Зависимости проекта и скрипты
+├── tsconfig.json          # Конфигурация TypeScript
+└── README.md              # Документация проекта
+```
