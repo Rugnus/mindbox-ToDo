@@ -1,5 +1,5 @@
 import { Button, Checkbox, Divider, Input, List, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { todoService } from "../services/todoService";
 
 interface Task {
@@ -49,6 +49,15 @@ const Todo: React.FC = () => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
+  const incompletedTasks = useMemo(
+    () => tasks.filter((task) => !task.completed),
+    [tasks]
+  );
+  const completed = useMemo(
+    () => tasks.filter((task) => task.completed),
+    [tasks]
+  );
+
   return (
     <div style={{ padding: "20px" }}>
       <Typography.Title level={3}>Todo List</Typography.Title>
@@ -66,7 +75,7 @@ const Todo: React.FC = () => {
       <Typography.Title level={4}>Невыполненные задачи</Typography.Title>
       <List
         bordered
-        dataSource={tasks.filter((task) => !task.completed)}
+        dataSource={incompletedTasks}
         renderItem={(task) => (
           <Item
             actions={[
@@ -85,7 +94,7 @@ const Todo: React.FC = () => {
       <Typography.Title level={4}>Выполненные задачи</Typography.Title>
       <List
         bordered
-        dataSource={tasks.filter((task) => task.completed)}
+        dataSource={completed}
         renderItem={(task) => (
           <Item
             actions={[
